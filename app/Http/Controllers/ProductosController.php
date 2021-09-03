@@ -104,7 +104,7 @@ class ProductosController extends Controller
     /**
      * Obtiene una cantidad especifica de productos con un inicio y un fin
      */
-    public function obtenerInfoProductos($pagina, $cantidad) {
+    public function obtenerInfoProductos($pagina, $cantidad, $cantidadItems) {
 
         $resp = array( 'estado' => false, 'data' => null, 'mensaje' => '', 'cantidad' => 0 );
 
@@ -117,7 +117,9 @@ class ProductosController extends Controller
             $items = Producto::obtenerInfoProductos($skip, $cantidad);
 
             // se obtiene la cantidad total de productos disponibles
-            $cantTtal = Producto::obtenerCantProds();
+            if( $cantidadItems > 0 ) {
+                $cantTtal = Producto::obtenerCantProds();
+            }            
 
             // valida si se encontro el registro
             if( !empty( $items ) ) {
