@@ -117,9 +117,11 @@ class ProductosController extends Controller
             $items = Producto::obtenerInfoProductos($skip, $cantidad);
 
             // se obtiene la cantidad total de productos disponibles
-            if( $cantidadItems > 0 ) {
+            if( $cantidadItems <= 1 ) {
                 $cantTtal = Producto::obtenerCantProds();
-            }            
+            } else {
+                $cantTtal = $cantidadItems;
+            }
 
             // valida si se encontro el registro
             if( !empty( $items ) ) {
