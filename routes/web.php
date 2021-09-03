@@ -9,7 +9,7 @@ Route::get('get-client/{identificacion}/{email}', 'App\Http\Controllers\Clientes
 // Rutas para obtener la información de los productos
 Route::get('get-products', 'App\Http\Controllers\ProductosController@obtenerProductos');
 Route::get('get-product', 'App\Http\Controllers\ProductosController@obtenerProducto');
-Route::get('get-info-items/{pagina}/{cantidad}', 'App\Http\Controllers\ProductosController@obtenerInfoProductos');
+Route::get('get-info-items/{pagina}/{cantidad}/{cantidadItems}', 'App\Http\Controllers\ProductosController@obtenerInfoProductos');
 Route::get('get-details-item/{idItem}', 'App\Http\Controllers\ProductosController@obtenerDetallesProducto');
 Route::get('get-items-by-cods/{cods}', 'App\Http\Controllers\ProductosController@obtenerProductosPorCodigo');
 Route::get('get-items-by-namebc/{descBarCode}', 'App\Http\Controllers\ProductosController@obtenerProductosPorNombreBarcode');
