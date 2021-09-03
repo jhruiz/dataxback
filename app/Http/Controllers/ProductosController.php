@@ -85,7 +85,7 @@ class ProductosController extends Controller
 
                 // valida si se econtraron registros
                 if( !empty( $producto ) ) {
-                    $producto['0']->desc_gru = !empty($producto['0']->grupo) ? $arrListGrp[$producto['0']->grupo] : '';
+                    $producto['0']->desc_gru = ''; //!empty($producto['0']->grupo) ? $arrListGrp[$producto['0']->grupo] : '';
                     $resp['estado'] = true;
                     $resp['data'] = $producto;
                 } else {
@@ -105,6 +105,7 @@ class ProductosController extends Controller
      * Obtiene una cantidad especifica de productos con un inicio y un fin
      */
     public function obtenerInfoProductos($pagina, $cantidad) {
+
         $resp = array( 'estado' => false, 'data' => null, 'mensaje' => '', 'cantidad' => 0 );
 
         try {
@@ -322,6 +323,31 @@ class ProductosController extends Controller
         }
 
         return $resp;
+    }
+
+    /**
+     * Busca el producto por código de barras, nombre o palabra clave
+     */
+    public function buscarProductos( $description ) {
+        $prods = [];
+
+        if( !empty( $description ) ) {
+
+            // busca el producto por codigo de barras
+            $resp = Producto::buscarProductoCodBar( $description );
+
+            if( empty( $resp['0']->cod_item ) ){
+                $resp = Producto::buscarProductos( $description );
+            }      
+
+            if( !empty( $resp['0'] ) ) {
+                foreach( $resp as $val ) {
+                    $prods[] = $this->procesarProductos( $val );
+                }
+            }
+        }
+
+        return $prods;
     }
 
     /**

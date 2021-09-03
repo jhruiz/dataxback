@@ -16,6 +16,7 @@ Route::get('get-items-by-namebc/{descBarCode}', 'App\Http\Controllers\ProductosC
 Route::get('get-items-by-cod/{codGru}', 'App\Http\Controllers\ProductosController@obtenerProductosPorGrupo');
 Route::get('get-item-price/{codBenf}/{codItem}', 'App\Http\Controllers\ProductosController@obtenerPrecioItemLista');
 Route::get('get-available-units/{codsItems}', 'App\Http\Controllers\ProductosController@obtenerUnidadesDisponiblesItems');
+Route::get('find-items/{description}', 'App\Http\Controllers\ProductosController@buscarProductos');
 
 
 // Rutas para obtener la información de los grupos
@@ -24,4 +25,9 @@ Route::get('get-info-groups/{cods}', 'App\Http\Controllers\GruposController@obte
 
 // Rutas para gestionar la información del pedido
 Route::get('save-order', 'App\Http\Controllers\PedidosController@guardarPedido');
+
+// Rutas para gestionar las palabras clave
+Route::get('save-key-word', 'App\Http\Controllers\PalabrasclaveitemsController@crearPalabraClaveItem');
+Route::get('get-key-word', 'App\Http\Controllers\PalabrasclaveitemsController@obtenerPalabrasClaveItem');
+Route::get('delete-key-word', 'App\Http\Controllers\PalabrasclaveitemsController@eliminarPalabrasClaveItem');
 

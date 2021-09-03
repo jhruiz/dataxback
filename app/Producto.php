@@ -48,7 +48,9 @@ class Producto extends Model
                                 )
                       ->leftjoin('inlista', 'inlista.cod_lis', '=', 'initem.cod_item')
                       ->join('insaldo', 'insaldo.cod_sdo', '=', 'initem.cod_item')     
-                      ->havingRaw('saldo_disponible > ?', [0])
+                      ->where('insaldo.bod_sdo', '=', '03')
+                      ->where('insaldo.actual_sdo', '>', 0)
+                      // ->havingRaw('saldo_disponible > ?', [0])
                       ->skip($skip)->take($take)
                       ->get();
 
@@ -62,7 +64,9 @@ class Producto extends Model
       $data = Producto::select(Producto::raw('(insaldo.actual_sdo - (insaldo.pdv_sdo + insaldo.sdo_asigpd)) as saldo_disponible')) 
                       ->leftjoin('inlista', 'inlista.cod_lis', '=', 'initem.cod_item')
                       ->join('insaldo', 'insaldo.cod_sdo', '=', 'initem.cod_item')
-                      ->havingRaw('saldo_disponible > ?', [0])
+                      ->where('insaldo.bod_sdo', '=', '03')
+                      ->where('insaldo.actual_sdo', '>', 0)
+                      // ->havingRaw('saldo_disponible > ?', [0])
                       ->count();
                       
       return $data;
@@ -93,8 +97,10 @@ class Producto extends Model
                               )
                       ->leftjoin('inlista', 'inlista.cod_lis', '=', 'initem.cod_item') 
                       ->join('insaldo', 'insaldo.cod_sdo', '=', 'initem.cod_item')
-                      ->havingRaw('saldo_disponible > ?', [0])
+                      // ->havingRaw('saldo_disponible > ?', [0])
+                      ->where('insaldo.bod_sdo', '=', '03')
                       ->where('initem.grupo', $grupo)
+                      ->where('insaldo.actual_sdo', '>', 0)
                       ->whereNotIn('initem.cod_item', $idItem)
                       ->take($cantItems) 
                       ->get();
@@ -130,8 +136,10 @@ class Producto extends Model
                                 )
                       ->leftjoin('inlista', 'inlista.cod_lis', '=', 'initem.cod_item') 
                       ->join('insaldo', 'insaldo.cod_sdo', '=', 'initem.cod_item')
-                      ->havingRaw('saldo_disponible > ?', [0])
+                      ->where('insaldo.bod_sdo', '=', '03')
+                      // ->havingRaw('saldo_disponible > ?', [0])
                       ->whereIn('initem.cod_item', $cods)
+                      ->where('insaldo.actual_sdo', '>', 0)
                       ->get();
 
       return $data;                
@@ -150,7 +158,9 @@ class Producto extends Model
                                 )
                       ->leftjoin('inlista', 'inlista.cod_lis', '=', 'initem.cod_item') 
                       ->join('insaldo', 'insaldo.cod_sdo', '=', 'initem.cod_item')
-                      ->havingRaw('saldo_disponible > ?', [0])
+                      ->where('insaldo.bod_sdo', '=', '03')
+                      // ->havingRaw('saldo_disponible > ?', [0])
+                      ->where('insaldo.actual_sdo', '>', 0)
                       ->where('initem.descrip', 'LIKE', "%$nomBarcode%")
                       ->orWhere('inlista.l_codebar', $nomBarcode)
                       ->get();
@@ -182,7 +192,9 @@ class Producto extends Model
                                 )
                       ->leftjoin('inlista', 'inlista.cod_lis', '=', 'initem.cod_item') 
                       ->join('insaldo', 'insaldo.cod_sdo', '=', 'initem.cod_item')
-                      ->havingRaw('saldo_disponible > ?', [0])
+                      ->where('insaldo.bod_sdo', '=', '03')
+                      // ->havingRaw('saldo_disponible > ?', [0])
+                      ->where('insaldo.actual_sdo', '>', 0)
                       ->where('initem.grupo', 'LIKE', "$grupo%")
                       ->get();
       return $data;         
@@ -194,9 +206,55 @@ class Producto extends Model
     public static function obtenerUnidadesDisponibles( $codsItems ) {
       $data = Producto::select('initem.cod_item', Producto::raw('(insaldo.actual_sdo - (insaldo.pdv_sdo + insaldo.sdo_asigpd)) as saldo_disponible'))
                       ->join('insaldo', 'insaldo.cod_sdo', '=', 'initem.cod_item')
+                      ->where('insaldo.bod_sdo', '=', '03')
                       ->whereIn('initem.cod_item', $codsItems)
                       ->get();
       return $data;        
+    }
+
+    /**
+     * Obtiene los productos que coincidan por palabras clave, descripcion y/o codigo de barras
+     */
+    public static function buscarProductos($desc) {
+      $data = Producto::select( 'initem.cod_item', 'initem.referencia', 'initem.descrip', 'initem.tasa_iva',
+                                'initem.tasaivavta', 'initem.itm_linea', 'initem.grupo', 'initem.itm_extens',
+                                'inlista.precio1', 'inlista.iva_inc_p1', 'inlista.precio1_ad', 'inlista.iva_pv1_ad',
+                                'inlista.precio2', 'inlista.iva_inc_p2', 'inlista.precio2_ad', 'inlista.iva_pv2_ad',
+                                'inlista.precio3', 'inlista.iva_inc_p3', 'inlista.precio3_ad', 'inlista.iva_pv3_ad',
+                                'insaldo.actual_sdo', Producto::raw('(insaldo.actual_sdo - (insaldo.pdv_sdo + insaldo.sdo_asigpd)) as saldo_disponible')
+                                )
+                      ->leftjoin('inlista', 'inlista.cod_lis', '=', 'initem.cod_item')
+                      ->join('insaldo', 'insaldo.cod_sdo', '=', 'initem.cod_item')
+                      ->leftjoin('palabrasclaveitems', 'palabrasclaveitems.cod_item', '=', 'initem.cod_item')
+                      ->where('insaldo.bod_sdo', '=', '03')
+                      ->where('initem.descrip', 'LIKE', "%$desc%")
+                      ->where('insaldo.actual_sdo', '>', 0)
+                      ->orWhere('palabrasclaveitems.palabra', 'LIKE', "%$desc%")
+                      // ->havingRaw('saldo_disponible > ?', [0])
+                      ->groupBy('initem.cod_item')                      
+                      ->get();
+
+      return $data;        
+    }
+
+    /**
+     * Obtiene el producto relacionado por el codigo de barras
+     */
+    public static function buscarProductoCodBar( $barcode ) {
+      $data = Producto::select( 'initem.cod_item', 'initem.referencia', 'initem.descrip', 'initem.tasa_iva',
+                                'initem.tasaivavta', 'initem.itm_linea', 'initem.grupo', 'initem.itm_extens',
+                                'inlista.precio1', 'inlista.iva_inc_p1', 'inlista.precio1_ad', 'inlista.iva_pv1_ad',
+                                'inlista.precio2', 'inlista.iva_inc_p2', 'inlista.precio2_ad', 'inlista.iva_pv2_ad',
+                                'inlista.precio3', 'inlista.iva_inc_p3', 'inlista.precio3_ad', 'inlista.iva_pv3_ad',
+                                'insaldo.actual_sdo', Producto::raw('(insaldo.actual_sdo - (insaldo.pdv_sdo + insaldo.sdo_asigpd)) as saldo_disponible')
+                                )
+                      ->leftjoin('inlista', 'inlista.cod_lis', '=', 'initem.cod_item')
+                      ->join('insaldo', 'insaldo.cod_sdo', '=', 'initem.cod_item')
+                      ->where('insaldo.bod_sdo', '=', '03')
+                      ->where('insaldo.actual_sdo', '>', 0)
+                      ->where('inlista.l_codebar', '=', $barcode)
+                      ->get();
+      return $data;       
     }
 
 
