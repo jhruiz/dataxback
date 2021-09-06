@@ -9,7 +9,8 @@ class Configuracion
      */
     public static function urlCotools() {
 
-    	return 'http://localhost:85/cotoolsback/public/';
+    	// return 'http://localhost:85/cotoolsback/public/';
+    	return 'https://cotoolsback.cotools.co/public/';
 
     }
 
