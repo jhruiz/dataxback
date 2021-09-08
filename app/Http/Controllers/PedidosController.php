@@ -36,7 +36,7 @@ class PedidosController extends Controller
                 'pd2_impto' => $val->tasaiva,
                 'pd2_vlriva' => $val->tasaiva,
                 'pd2_color' => $item['0']->itm_color,
-                'pd2_ventas' => !empty(trim($benef['0']->vende_benf)) ? trim($benef['0']->vende_benf) : '01'
+                'pd2_ventas' => !empty(trim($benef['0']->vende_benf)) ? trim($benef['0']->vende_benf) : '01',
                 'exp_datax' => '0'
             );
 
