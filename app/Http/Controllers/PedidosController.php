@@ -36,7 +36,7 @@ class PedidosController extends Controller
                 'pd2_impto' => $val->tasaiva,
                 'pd2_vlriva' => $val->tasaiva,
                 'pd2_color' => $item['0']->itm_color,
-                'pd2_ventas' => $benef['0']->vende_benf,
+                'pd2_ventas' => !empty(trim($benef['0']->vende_benf)) ? trim($benef['0']->vende_benf) : '01'
                 'exp_datax' => '0'
             );
 
@@ -67,7 +67,7 @@ class PedidosController extends Controller
             'pd_fecha' => $fechaAct,
             'pd_cliente' => $pedido['0']->cod_benf,
             'pd_qreg' => count($pedido),
-            'pd_ventas' => $benef['0']->vende_benf,
+            'pd_ventas' => !empty(trim($benef['0']->vende_benf)) ? trim($benef['0']->vende_benf) : '01',
             'pd_detalle' => 'Venta web',
             'pd_fec_ing' => $fechaAct,
             'pd_pago' => $tipoPago,
@@ -90,6 +90,7 @@ class PedidosController extends Controller
      * Guardar el pedido
      */
     public function guardarPedido(Request $request) {
+
         $resp = array( 'estado' => false, 'data' => null, 'mensaje' => '' );
 
         $userId = $request['userId'];
@@ -103,7 +104,7 @@ class PedidosController extends Controller
 
                 // obtiene el precio configurado para el cliente desde datax
                 $client = new Client();
-                $response = $client->request('GET', $urlCotools . 'get-simple-info-order/' . $userId);                
+                $response = $client->request('GET', $urlCotools . 'get-simple-info-order/' . $userId);
 
                 if($response->getStatusCode() == '200') {
                     $content = (string) $response->getBody()->getContents();
