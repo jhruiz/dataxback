@@ -289,7 +289,7 @@ class ProductosController extends Controller
                             'ivaInc' => $item['0']->iva_inc_p1,
                             'tasaIva' => $item['0']->tasa_iva
                         );                        
-                    } else if( $cliente['0']->lista_benf == '1' ) {
+                    } else if( $cliente['0']->lista_benf == '2' ) {
                         $resp = array(
                             'precio' => $item['0']->precio2,
                             'ivaInc' => $item['0']->iva_inc_p2,

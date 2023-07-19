@@ -13,7 +13,7 @@ Route::get('get-info-items/{pagina}/{cantidad}/{cantidadItems}', 'App\Http\Contr
 Route::get('get-details-item/{idItem}', 'App\Http\Controllers\ProductosController@obtenerDetallesProducto');
 Route::get('get-items-by-cods/{cods}', 'App\Http\Controllers\ProductosController@obtenerProductosPorCodigo');
 Route::get('get-items-by-namebc/{descBarCode}', 'App\Http\Controllers\ProductosController@obtenerProductosPorNombreBarcode');
-Route::get('get-items-by-cod/{codGru}', 'App\Http\Controllers\ProductosController@obtenerProductosPorGrupo');
+Route::get('get-items-by-cod/{codGru}', 'App\Http\Controllers\ProductosController@obtenerProductosPorGrupo'); //este
 Route::get('get-item-price/{codBenf}/{codItem}', 'App\Http\Controllers\ProductosController@obtenerPrecioItemLista');
 Route::get('get-available-units/{codsItems}', 'App\Http\Controllers\ProductosController@obtenerUnidadesDisponiblesItems');
 Route::get('find-items/{description}', 'App\Http\Controllers\ProductosController@buscarProductos');
